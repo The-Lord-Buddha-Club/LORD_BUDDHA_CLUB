@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 
 const navigation = [
+  { name: "Dashboard", href: "/dashboard" },
   { name: "Projects", href: "/projects" },
   { name: "Blog", href: "/blog" },
   { name: "About", href: "/about" },
@@ -61,26 +62,28 @@ export function Navbar() {
             <div className="hidden md:block ml-10">
               <div className="flex items-center space-x-1">
                 {navigation.map((item) => (
-                  <Link key={item.name} href={item.href}>
-                    <motion.div
-                      className={cn(
-                        "px-4 py-2 rounded-full text-sm font-medium transition-colors relative",
-                        pathname === item.href
-                          ? "text-primary"
-                          : "text-muted-foreground hover:text-primary"
-                      )}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                    >
-                      {item.name}
-                      {pathname === item.href && (
-                        <motion.div
-                          className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
-                          layoutId="navbar-underline"
-                        />
-                      )}
-                    </motion.div>
-                  </Link>
+                  (item.name !== "Dashboard" || session) && (
+                    <Link key={item.name} href={item.href}>
+                      <motion.div
+                        className={cn(
+                          "px-4 py-2 rounded-full text-sm font-medium transition-colors relative",
+                          pathname === item.href
+                            ? "text-primary"
+                            : "text-muted-foreground hover:text-primary"
+                        )}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        {item.name}
+                        {pathname === item.href && (
+                          <motion.div
+                            className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                            layoutId="navbar-underline"
+                          />
+                        )}
+                      </motion.div>
+                    </Link>
+                  )
                 ))}
               </div>
             </div>
