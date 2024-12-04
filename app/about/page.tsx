@@ -30,7 +30,7 @@ export default function AboutPage() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 pt-20">
       <div className="container mx-auto px-4 py-16">
         <motion.h1
-          className="text-5xl md:text-6xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-primary dark:to-purple-400"
+          className="text-5xl md:text-6xl font-extrabold text-center mb-6 bg-clip-text text-transparent bg-gradient-to-r from-primary to-purple-600 dark:from-primary dark:to-purple-400 font-sans"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -39,7 +39,7 @@ export default function AboutPage() {
         </motion.h1>
 
         <motion.p
-          className="text-center text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-16 max-w-3xl mx-auto"
+          className="text-center text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-16 max-w-3xl mx-auto font-serif"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -64,10 +64,10 @@ export default function AboutPage() {
           <motion.div variants={fadeInUp}>
             <ValuesCard />
           </motion.div>
-          <motion.div variants={fadeInUp}>
+          <motion.div variants={fadeInUp} className="md:col-span-2">
             <FoundersCard />
           </motion.div>
-          <motion.div variants={fadeInUp}>
+          <motion.div variants={fadeInUp} className="md:col-span-2">
             <CommunityCard />
           </motion.div>
         </motion.div>
