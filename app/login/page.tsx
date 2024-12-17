@@ -15,7 +15,7 @@ export default function LoginPage() {
         <CardContent>
           <Button
             className="w-full"
-            onClick={() => signIn("github", { callbackUrl: "/" })}
+            onClick={() => signIn("github")}
           >
             <GithubIcon className="mr-2 h-4 w-4" />
             Continue with GitHub
