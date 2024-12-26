@@ -5,16 +5,20 @@ import {
   primaryKey,
   integer,
   boolean,
+  pgEnum,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
+
+export const roleEnum = pgEnum('role', ['owner', 'admin', 'member']);
 
 export const users = pgTable("user", {
   id: text("id").notNull().primaryKey(),
   name: text("name"),
-  email: text("email"),
+  email: text("email").notNull(),
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
   isVerifiedMember: boolean("isVerifiedMember").default(false),
+  role: roleEnum("role").default('member'),
 });
 
 export const accounts = pgTable(
@@ -77,6 +81,16 @@ export const blogPosts = pgTable("blogPost", {
   authorId: text("authorId")
     .notNull()
     .references(() => users.id),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
+});
+
+export const roleTransfers = pgTable("roleTransfer", {
+  id: text("id").notNull().primaryKey(),
+  fromUserId: text("fromUserId").notNull().references(() => users.id),
+  toUserId: text("toUserId").notNull().references(() => users.id),
+  role: roleEnum("role").notNull(),
+  status: text("status").notNull(), // 'pending', 'accepted', 'rejected'
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
 });
