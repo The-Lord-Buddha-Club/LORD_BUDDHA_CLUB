@@ -4,6 +4,9 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "@/lib/db";
 import { Adapter } from "@auth/core/adapters";
 
+/**
+ * Extend NextAuth's Session and JWT interfaces to include user ID.
+ */
 declare module "next-auth" {
   interface Session {
     user: {
@@ -17,6 +20,18 @@ declare module "next-auth" {
   }
 }
 
+/**
+ * Helper function to validate environment variables.
+ * Throws an error if the variable is not set.
+ */
+function getEnvVariable(key: string): string {
+  const value = process.env[key];
+  if (!value) {
+    throw new Error(`Missing environment variable: ${key}`);
+  }
+  return value;
+}
+
 export const authOptions: NextAuthOptions = {
   adapter: DrizzleAdapter(db) as Adapter,
   session: {
@@ -25,11 +40,16 @@ export const authOptions: NextAuthOptions = {
   },
   providers: [
     GithubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID || "",
-      clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
+      clientId: getEnvVariable("GITHUB_CLIENT_ID"),
+      clientSecret: getEnvVariable("GITHUB_CLIENT_SECRET"),
+      authorization: {
+        params: {
+          scope: "read:user user:email", // Request access to user emails
+        },
+      },
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET!, // Ensure this is set
+  secret: getEnvVariable("NEXTAUTH_SECRET"),
   cookies: {
     sessionToken: {
       name: `next-auth.session-token`,
@@ -49,9 +69,15 @@ export const authOptions: NextAuthOptions = {
         session.user.name = token.name;
         session.user.image = token.image as string;
       }
+      console.log("Session Callback:", session); // Debugging
       return session;
     },
     async signIn({ user, account, profile, email, credentials }) {
+      if (!user.email) {
+        console.log("SignIn Callback: Email is missing.");
+        return false; // Abort sign-in
+      }
+      console.log("SignIn Callback: User signed in with email:", user.email);
       return true;
     },
   },

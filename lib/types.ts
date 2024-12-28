@@ -20,3 +20,17 @@ export interface EmailVerificationPayload {
   email: string;
   token: string;
 }
+
+export interface Event {
+  id: string;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  location: string;
+  type: 'online' | 'in-person';
+  status: 'upcoming' | 'past';
+  createdById: string;
+  createdAt: string;
+  updatedAt: string;
+}

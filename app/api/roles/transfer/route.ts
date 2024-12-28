@@ -15,11 +15,11 @@ export async function POST(req: Request) {
     const { toUserId, role } = await req.json();
 
     // Get current user's role
-    const fromUser = await db.query(users).findFirst({
+    const fromUser = await db.query.users.findFirst({
       where: eq(users.id, currentUser.id),
     });
 
-    if (!fromUser || !can(fromUser.role, 'transfer', role)) {
+    if (!fromUser || fromUser.role === null || !can(fromUser.role, 'transfer', role)) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
@@ -32,15 +32,14 @@ export async function POST(req: Request) {
       fromUserId: currentUser.id,
       toUserId,
       role,
-      status: 'pending',
+      status: "pending",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
-    return NextResponse.json({ message: "Transfer request created" });
+    return NextResponse.json({ message: "Transfer request created successfully." }, { status: 201 });
   } catch (error) {
-    console.error("Role transfer error:", error);
-    return NextResponse.json(
-      { error: "Failed to create transfer request" },
-      { status: 500 }
-    );
+    console.error("Error creating transfer request:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

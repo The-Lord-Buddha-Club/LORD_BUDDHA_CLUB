@@ -94,3 +94,26 @@ export const roleTransfers = pgTable("roleTransfer", {
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
 });
+
+export const events = pgTable("event", {
+  id: text("id").notNull().primaryKey(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  startDate: timestamp("startDate", { mode: "date" }).notNull(),
+  endDate: timestamp("endDate", { mode: "date" }).notNull(),
+  location: text("location").notNull(),
+  type: text("type").notNull(), // 'online' or 'in-person'
+  status: text("status").notNull(), // 'upcoming' or 'past'
+  createdById: text("createdById").notNull().references(() => users.id),
+  createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
+  updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
+});
+
+
+export const schema = {
+  users,
+  accounts,
+  blogPosts,
+  roleTransfers,
+  events,
+};
