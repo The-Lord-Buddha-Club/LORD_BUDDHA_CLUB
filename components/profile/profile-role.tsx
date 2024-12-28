@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield } from "lucide-react";
+import { Shield, ChevronUp, ChevronDown } from 'lucide-react';
 import type { Role } from "@/lib/auth/roles";
 
 interface ProfileRoleProps {
@@ -11,7 +12,8 @@ interface ProfileRoleProps {
 }
 
 export function ProfileRole({ userId }: ProfileRoleProps) {
-  const [role, setRole] = useState<Role>("member"); // Initialize with default role
+  const [role, setRole] = useState<Role>("member");
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     fetch(`/api/users/${userId}/role`)
@@ -22,7 +24,6 @@ export function ProfileRole({ userId }: ProfileRoleProps) {
         return res.json();
       })
       .then((data) => {
-        // Ensure that the fetched role is valid; otherwise, fallback to 'member'
         if (data.role && ["owner", "admin", "member"].includes(data.role)) {
           setRole(data.role as Role);
         } else {
@@ -31,7 +32,7 @@ export function ProfileRole({ userId }: ProfileRoleProps) {
       })
       .catch((error) => {
         console.error("Failed to fetch role:", error);
-        setRole("member"); // Fallback to default role on error
+        setRole("member");
       });
   }, [userId]);
 
@@ -48,30 +49,62 @@ export function ProfileRole({ userId }: ProfileRoleProps) {
     }
   };
 
-  // Since 'role' is always defined, no need to check for undefined here
-  const displayRole =
-    role && typeof role === "string"
-      ? role.charAt(0).toUpperCase() + role.slice(1)
-      : "No Role Assigned";
+  const displayRole = role.charAt(0).toUpperCase() + role.slice(1);
+
+  const roleDescriptions = {
+    owner: "Full control over the organization and its members.",
+    admin: "Manage users and content within the organization.",
+    member: "Participate in discussions and contribute content.",
+  };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Shield className="h-5 w-5" />
-          Organization Role
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground">Current Role</p>
-          <Badge className={getRoleBadgeColor(role)} variant="secondary">
-            {displayRole}
-          </Badge>
-        </div>
-      </CardContent>
-    </Card>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Card className="overflow-hidden bg-gradient-to-br from-background to-background/80 border border-primary/20 shadow-lg">
+        <CardHeader className="bg-primary/5 pb-6">
+          <CardTitle className="flex items-center gap-2 text-2xl font-bold text-primary">
+            <Shield className="h-6 w-6" />
+            Organization Role
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between">
+            <p className="text-muted-foreground">Current Role</p>
+            <Badge className={`${getRoleBadgeColor(role)} px-3 py-1 text-sm font-medium`}>
+              {displayRole}
+            </Badge>
+          </div>
+          <motion.div
+            initial={false}
+            animate={{ height: isExpanded ? "auto" : 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            <p className="mt-4 text-sm text-muted-foreground">
+              {roleDescriptions[role]}
+            </p>
+          </motion.div>
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="mt-4 flex items-center text-sm text-primary hover:underline focus:outline-none"
+          >
+            {isExpanded ? (
+              <>
+                <ChevronUp className="mr-1 h-4 w-4" />
+                Hide details
+              </>
+            ) : (
+              <>
+                <ChevronDown className="mr-1 h-4 w-4" />
+                Show details
+              </>
+            )}
+          </button>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }
-
-export default ProfileRole;

@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, GitFork, Star } from "lucide-react";
+import { FileText, GitFork, Star } from 'lucide-react';
 
 interface ProfileStats {
   posts: number;
@@ -28,38 +29,45 @@ export function ProfileStats({ userId }: ProfileStatsProps) {
       .catch((error) => console.error("Failed to fetch stats:", error));
   }, [userId]);
 
+  const statItems = [
+    { icon: FileText, label: "Blog Posts", value: stats.posts },
+    { icon: GitFork, label: "Contributions", value: stats.contributions },
+    { icon: Star, label: "Reputation", value: stats.reputation },
+  ];
+
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Activity Overview</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid gap-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <FileText className="h-4 w-4 text-muted-foreground" />
-              <span>Blog Posts</span>
-            </div>
-            <span className="font-medium">{stats.posts}</span>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Card className="overflow-hidden bg-gradient-to-br from-background to-background/80 border border-primary/20 shadow-lg">
+        <CardHeader className="bg-primary/5 pb-6">
+          <CardTitle className="text-2xl font-bold text-primary">Activity Overview</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="grid gap-6">
+            {statItems.map((item, index) => (
+              <motion.div
+                key={item.label}
+                className="flex items-center justify-between"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="bg-primary/10 p-2 rounded-full">
+                    <item.icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <span className="font-medium text-primary">{item.label}</span>
+                </div>
+                <span className="text-2xl font-bold text-primary">{item.value}</span>
+              </motion.div>
+            ))}
           </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <GitFork className="h-4 w-4 text-muted-foreground" />
-              <span>Contributions</span>
-            </div>
-            <span className="font-medium">{stats.contributions}</span>
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Star className="h-4 w-4 text-muted-foreground" />
-              <span>Reputation</span>
-            </div>
-            <span className="font-medium">{stats.reputation}</span>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 }
+
