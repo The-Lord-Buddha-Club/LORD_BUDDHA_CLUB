@@ -5,18 +5,23 @@ import { db } from "@/lib/db";
 import { Adapter } from "@auth/core/adapters";
 
 /**
- * Extend NextAuth's Session and JWT interfaces to include user ID.
+ * Extend NextAuth's Session and JWT interfaces to include user ID and image.
  */
 declare module "next-auth" {
   interface Session {
     user: {
       /** The user's unique identifier. */
       id: string;
+      /** The user's profile image URL. */
+      image?: string;
     } & DefaultSession["user"];
   }
 
   interface JWT {
-    id: string;
+    /** The user's unique identifier. */
+    id?: string;
+    /** The user's profile image URL. */
+    image?: string;
   }
 }
 
@@ -42,10 +47,22 @@ export const authOptions: NextAuthOptions = {
     GithubProvider({
       clientId: getEnvVariable("GITHUB_CLIENT_ID"),
       clientSecret: getEnvVariable("GITHUB_CLIENT_SECRET"),
+      
       authorization: {
         params: {
           scope: "read:user user:email", // Request access to user emails
         },
+      },
+      /**
+       * Maps GitHub profile data to NextAuth user object.
+       */
+      profile(profile) {
+        return {
+          id: profile.id.toString(),
+          name: profile.name || profile.login,
+          email: profile.email,
+          image: profile.avatar_url, // Ensure 'image' is correctly mapped
+        };
       },
     }),
   ],
@@ -62,6 +79,22 @@ export const authOptions: NextAuthOptions = {
     },
   },
   callbacks: {
+    /**
+     * JWT callback is called whenever a JSON Web Token is created (i.e., at sign-in) or updated.
+     */
+    async jwt({ token, user, account, profile }) {
+      if (user) {
+        token.id = user.id;
+      }
+      if (profile) {
+        token.image = (profile as any).avatar_url; // Use 'image' instead of 'picture' for consistency
+      }
+      return token;
+    },
+
+    /**
+     * Session callback is called whenever a session is checked.
+     */
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;

@@ -74,13 +74,12 @@ export const projects = pgTable("project", {
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
 });
 
-export const blogPosts = pgTable("blogPost", {
+export const blogPosts = pgTable("blog_post", {
   id: text("id").notNull().primaryKey(),
   title: text("title").notNull(),
   content: text("content").notNull(),
-  authorId: text("authorId")
-    .notNull()
-    .references(() => users.id),
+  authorId: text("authorId").notNull().references(() => users.id),
+  published: boolean("published").default(false),
   createdAt: timestamp("createdAt", { mode: "date" }).defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).defaultNow(),
 });
