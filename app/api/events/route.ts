@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { events, users } from "@/lib/db/schema";
 import { getCurrentUser } from "@/lib/auth/utils";
-import { can } from "@/lib/auth/roles";
+import { can, Role } from "@/lib/auth/roles";
 import { eq } from "drizzle-orm";
 
 export async function GET() {
@@ -13,6 +13,7 @@ export async function GET() {
 
     return NextResponse.json(events);
   } catch (error) {
+    console.error("Failed to fetch events:", error);
     return NextResponse.json(
       { error: "Failed to fetch events" },
       { status: 500 }
@@ -32,7 +33,7 @@ export async function POST(req: Request) {
       columns: { role: true },
     });
 
-    if (!userRole || !userRole.role || !can(userRole.role, "create", "events")) {
+    if (!userRole?.role || !can(userRole.role as Role, "create", "events")) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
@@ -44,10 +45,12 @@ export async function POST(req: Request) {
       ...data,
       id: crypto.randomUUID(),
       createdById: user.id,
+      status: new Date(data.startDate) > new Date() ? "upcoming" : "past",
     });
 
     return NextResponse.json(event);
   } catch (error) {
+    console.error("Failed to create event:", error);
     return NextResponse.json(
       { error: "Failed to create event" },
       { status: 500 }

@@ -13,7 +13,7 @@ import { BackgroundGradient } from "@/components/ui/background-gradient";
 import { TypewriterEffect } from "@/components/ui/typewriter-effect";
 import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 
-export default function HeroSection() {
+const HeroSection = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function HeroSection() {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 pt-24 md:pt-32">
       <AnimatedBackground />
       
       <div className="relative z-10 container mx-auto px-4 py-24 sm:py-32 mt-16">
@@ -130,5 +130,7 @@ export default function HeroSection() {
       </div>
     </section>
   );
-}
+};
+
+export default HeroSection;
 

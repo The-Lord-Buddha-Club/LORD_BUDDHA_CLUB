@@ -86,8 +86,8 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
       }
-      if (profile) {
-        token.image = (profile as any).avatar_url; // Use 'image' instead of 'picture' for consistency
+      if (profile && 'avatar_url' in profile) {
+        token.picture = (profile as { avatar_url: string }).avatar_url;
       }
       return token;
     },
