@@ -1,18 +1,16 @@
 import { DefaultSession, NextAuthOptions } from "next-auth";
-import GithubProvider from "next-auth/providers/github";
+import GitHubProvider from "next-auth/providers/github"; // Corrected import
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "@/lib/db";
 import { Adapter } from "@auth/core/adapters";
 
-/**
- * Extend NextAuth's Session and JWT interfaces to include user ID and image.
- */
+
 declare module "next-auth" {
   interface Session {
     user: {
-      /** The user's unique identifier. */
+      
       id: string;
-      /** The user's profile image URL. */
+  
       image?: string;
     } & DefaultSession["user"];
   }
@@ -44,7 +42,7 @@ export const authOptions: NextAuthOptions = {
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   providers: [
-    GithubProvider({
+    GitHubProvider({ // Corrected provider name
       clientId: getEnvVariable("GITHUB_CLIENT_ID"),
       clientSecret: getEnvVariable("GITHUB_CLIENT_SECRET"),
       
@@ -86,8 +84,8 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
       }
-      if (profile && 'avatar_url' in profile) {
-        token.picture = (profile as { avatar_url: string }).avatar_url;
+      if (profile && 'avatar_url' in profile && profile.avatar_url) {
+        token.image = profile.avatar_url;
       }
       return token;
     },
