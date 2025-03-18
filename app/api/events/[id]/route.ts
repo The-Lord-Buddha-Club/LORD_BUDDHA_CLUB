@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
-import { events, users } from "@/lib/db/schema";
+import { events } from "@/lib/db/schema";
 import { getCurrentUser } from "@/lib/auth/utils";
 import { can } from "@/lib/auth/roles";
 import { eq } from "drizzle-orm";
@@ -16,11 +16,11 @@ export async function PUT(
     }
 
     const userRole = await db.query.users.findFirst({
-      where: eq(users.id, user.id),
+      where: eq(user.id, user.id),
       columns: { role: true },
     });
 
-    if (!userRole?.role || !can(userRole.role, "edit", "events")) {
+    if (!userRole || !can(user.role, "edit", "events")) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
@@ -53,11 +53,11 @@ export async function DELETE(
     }
 
     const userRole = await db.query.users.findFirst({
-      where: eq(users.id, user.id),
+      where: eq(user.id, user.id),
       columns: { role: true },
     });
 
-    if (!userRole?.role || !can(userRole.role, "delete", "events")) {
+    if (!userRole || !can(user.role, "delete", "events")) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }

@@ -23,7 +23,7 @@ const footerLinks = {
 
 const socialLinks = [
   { icon: GithubIcon, href: "https://github.com/The-Lord-Buddha-Club" },
-  { icon: Linkedin, href: "https://www.linkedin.com/company/the-lord-buddha-club" },
+  { icon: Linkedin, href: "https://linkedin.com/in/the-lord-buddha-club-3a6954245" },
   { icon: Twitter, href: "https://twitter.com/lordbuddhaclub" },
 ];
 

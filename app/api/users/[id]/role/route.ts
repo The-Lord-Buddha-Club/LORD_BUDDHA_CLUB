@@ -19,7 +19,17 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({ role: user.role });
+    console.log(user.role);
+
+    return NextResponse.json({ role: user.role },
+      {
+        status: 200,
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          'Pragma': 'no-cache'
+        }
+      }
+    );
   } catch (error) {
     console.error("Failed to fetch user role:", error);
     return NextResponse.json(
