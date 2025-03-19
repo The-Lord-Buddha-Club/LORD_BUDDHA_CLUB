@@ -19,7 +19,6 @@ export async function GET(
       );
     }
 
-    console.log(user.role);
 
     return NextResponse.json({ role: user.role },
       {

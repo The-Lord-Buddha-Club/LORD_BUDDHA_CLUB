@@ -25,11 +25,12 @@ export function ProfileRole({ userId }: ProfileRoleProps) {
       })
       .then((data) => {
         if (data.role && ["owner", "admin", "member"].includes(data.role)) {
-          console.log(data)
-          console.log(userId)
           setRole(data.role as Role);
+        } else {
+          setRole("member")
         }
       })
+      
       .catch((error) => {
         console.error("Failed to fetch role:", error);
       });
