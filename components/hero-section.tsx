@@ -34,29 +34,22 @@ const HeroSection = () => {
   }, []);
 
   const words = [
-    {
-      text: "The",
-    },
-    {
-      text: "Lord",
-    },
-    {
-      text: "Buddha",
-    },
-    {
-      text: "Club",
-    },
+    { text: "The" },
+    { text: "Lord" },
+    { text: "Buddha" },
+    { text: "Club" },
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 pt-24 md:pt-32">
+    <section className="relative flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 pt-16">
       <AnimatedBackground />
       
-      <div className="relative z-10 container mx-auto px-4 py-24 sm:py-32 mt-16">
-        <div className="flex flex-col items-center justify-center space-y-8 max-w-5xl mx-auto text-center">
-          <BackgroundGradient className="rounded-[22px] max-w-sm p-4 sm:p-10 bg-white dark:bg-gray-900">
+      <div className="relative z-10 container mx-auto px-4 py-10 sm:py-14">
+        <div className="flex flex-col items-center justify-center space-y-5 max-w-4xl mx-auto text-center">
+          {/* Smaller 3D model container */}
+          <BackgroundGradient className="rounded-[22px] max-w-sm p-3 sm:p-5 bg-white dark:bg-gray-900">
             <motion.div 
-              className="w-64 h-64 sm:w-80 sm:h-80 relative"
+              className="w-48 h-48 sm:w-56 sm:h-56 relative"
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
@@ -82,7 +75,7 @@ const HeroSection = () => {
                   )}
 
                   <Center>
-                    <BuddhaLogo scale={[2.5, 2.5, 2.5]} />
+                    <BuddhaLogo scale={[2.2, 2.2, 2.2]} />
                   </Center>
 
                   <OrbitControls enablePan={false} enableZoom={false} />
@@ -91,28 +84,34 @@ const HeroSection = () => {
             </motion.div>
           </BackgroundGradient>
           
-          <TypewriterEffect words={words} className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold" />
+          {/* Smaller font sizes */}
+          <TypewriterEffect words={words} className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold" />
           
+          {/* Compact text area */}
           <div className="max-w-2xl mx-auto">
-            <TextGenerateEffect words="A community of developers dedicated to creating impactful open-source projects and fostering collaborative learning. Join us in our journey of enlightened coding and spiritual growth through technology." className="text-base sm:text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed" />
+            <TextGenerateEffect 
+              words="A community of developers dedicated to creating impactful open-source projects and fostering collaborative learning." 
+              className="text-sm sm:text-base md:text-lg text-gray-700 dark:text-gray-300 leading-relaxed" 
+            />
           </div>
           
+          {/* Buttons with reduced vertical spacing */}
           <motion.div 
-            className="flex flex-col sm:flex-row gap-4 mt-8 w-full sm:w-auto justify-center"
+            className="flex flex-col sm:flex-row gap-3 mt-4 w-full sm:w-auto justify-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
             <Button 
               asChild 
-              size="lg" 
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
+              size="default" 
+              className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-md hover:shadow-lg transition-all duration-300 w-full sm:w-auto"
             >
               <Link href="/join">Join Our Community</Link>
             </Button>
             <Button 
               variant="outline" 
-              size="lg" 
+              size="default" 
               asChild
               className="group border-indigo-500 dark:border-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-all duration-300 w-full sm:w-auto"
             >
@@ -121,7 +120,7 @@ const HeroSection = () => {
                 target="_blank"
                 className="flex items-center justify-center space-x-2"
               >
-                <GithubIcon className="h-5 w-5 text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-700 dark:group-hover:text-indigo-300" />
+                <GithubIcon className="h-4 w-4 text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-700 dark:group-hover:text-indigo-300" />
                 <span className="text-indigo-600 dark:text-indigo-400 group-hover:text-indigo-700 dark:group-hover:text-indigo-300">Visit GitHub</span>
               </Link>
             </Button>
@@ -133,4 +132,3 @@ const HeroSection = () => {
 };
 
 export default HeroSection;
-

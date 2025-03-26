@@ -6,7 +6,7 @@ import { AnimatedTerminal } from "@/components/ui/animated-terminal";
 
 export default function Home() {
   return (
-    <div className="container mx-auto px-4 py-8 space-y-16">
+    <div className="container mx-auto px-4 py-4 space-y-16">
       <HeroSection />
       <AnimatedTerminal
   quotes={[
