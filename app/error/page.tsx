@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,8 @@ interface ErrorDetails {
   description: string;
 }
 
-export default function ErrorPage() {
+// Create a separate component that uses useSearchParams
+function ErrorContent() {
   const searchParams = useSearchParams();
   const [errorDetails, setErrorDetails] = useState<ErrorDetails>({
     message: "An error occurred",
@@ -41,30 +42,50 @@ export default function ErrorPage() {
   }, [searchParams]);
 
   return (
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle className="text-2xl text-center">Authentication Error</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Alert variant="destructive">
+          <ExclamationTriangleIcon className="h-4 w-4" />
+          <AlertTitle>{errorDetails.message}</AlertTitle>
+          <AlertDescription>
+            {errorDetails.description}
+          </AlertDescription>
+        </Alert>
+        
+        <div className="flex justify-center space-x-4">
+          <Button asChild variant="outline">
+            <Link href="/">Go Home</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/login">Try Again</Link>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Main component with Suspense boundary
+export default function ErrorPage() {
+  return (
     <div className="container mx-auto px-4 py-16 flex justify-center">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">Authentication Error</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Alert variant="destructive">
-            <ExclamationTriangleIcon className="h-4 w-4" />
-            <AlertTitle>{errorDetails.message}</AlertTitle>
-            <AlertDescription>
-              {errorDetails.description}
-            </AlertDescription>
-          </Alert>
-          
-          <div className="flex justify-center space-x-4">
-            <Button asChild variant="outline">
-              <Link href="/">Go Home</Link>
-            </Button>
-            <Button asChild>
-              <Link href="/login">Try Again</Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <Suspense fallback={
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">Loading...</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-20 flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          </CardContent>
+        </Card>
+      }>
+        <ErrorContent />
+      </Suspense>
     </div>
   );
 }
