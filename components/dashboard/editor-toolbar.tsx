@@ -22,6 +22,14 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
 
   if (!editor) return null;
 
+  const addImage = () => {
+    const url = window.prompt('Enter the URL of the image:');
+
+    if (url) {
+      editor.chain().focus().setImage({ src: url }).run();
+    }
+  };
+
   const addLink = () => {
     if (linkUrl) {
       editor.chain().focus().toggleLink({ href: linkUrl }).run();
@@ -109,7 +117,8 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
               </div>
             </DialogContent>
           </Dialog>
-          <ToolbarButton icon={<Image className="h-4 w-4" />} action={() => {/* Implement image upload logic */}} tooltip="Insert Image" />
+          {/* Update the action to call addImage */}
+          <ToolbarButton icon={<Image className="h-4 w-4" />} action={addImage} tooltip="Insert Image" />
         </ToolbarGroup>
 
         <Separator orientation="vertical" className="h-8" />
@@ -122,4 +131,3 @@ export function EditorToolbar({ editor }: EditorToolbarProps) {
     </BackgroundGradient>
   );
 }
-

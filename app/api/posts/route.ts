@@ -33,15 +33,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { title, content } = await req.json();
+    // Read title, content, and published status from the request body
+    const { title, content, published } = await req.json();
+
+    // Insert the new post, using the received published status (defaulting to false if undefined)
     const post = await db.insert(blogPosts).values({
       id: crypto.randomUUID(),
       title,
       content,
       authorId: user.id,
-    });
+      published: published ?? false, // Use the published value from the request
+    }).returning(); // Use returning() to get the inserted post data back
 
-    return NextResponse.json(post);
+    // Return the first element of the returned array
+    return NextResponse.json(post[0]);
   } catch (error) {
     console.error("Failed to create post:", error);
     return NextResponse.json(

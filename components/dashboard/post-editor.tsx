@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
+import Image from "@tiptap/extension-image"; // Import the Image extension
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -33,6 +34,7 @@ export function PostEditor({ userId, post }: PostEditorProps) {
       Link.configure({
         openOnClick: false,
       }),
+      Image, // Add the Image extension here
     ],
     content: post?.content || "",
     editorProps: {
@@ -58,6 +60,8 @@ export function PostEditor({ userId, post }: PostEditorProps) {
           title,
           content,
           authorId: userId,
+          // Explicitly set published status when creating a new post
+          published: !post ? true : undefined, // Send true if it's a new post (POST), otherwise let PUT handle it (or default)
         }),
       });
 
@@ -158,4 +162,3 @@ export function PostEditor({ userId, post }: PostEditorProps) {
     </div>
   );
 }
-
