@@ -45,10 +45,18 @@ export async function POST(req: Request) {
       published: published ?? false, // Use the published value from the request
     }).returning(); // Use returning() to get the inserted post data back
 
-    // Return the first element of the returned array
-    return NextResponse.json(post[0]);
+    // Check if the database insertion returned the expected data
+    if (!post || post.length === 0) {
+      console.error("Database insertion failed: Did not return inserted row.");
+      // Return a specific error response
+      return NextResponse.json({ error: "Database insertion failed" }, { status: 500 });
+    }
+
+    // Explicitly return 200 OK status with the created post data
+    return NextResponse.json(post[0], { status: 200 });
   } catch (error) {
-    console.error("Failed to create post:", error);
+    // Log the specific error
+    console.error("Error in POST /api/posts:", error);
     return NextResponse.json(
       { error: "Failed to create post" },
       { status: 500 }
